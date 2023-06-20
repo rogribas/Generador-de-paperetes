@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generador de paperetes Eleccions</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <style>
+    html, body {
+        margin: 0;
+        height: 100%;
+    }
+    .background {
+        background: #ddd;
+        text-align: center;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+    #papereta-container {
+        background-color: #ddd;
+    }
+    #papereta {
+        padding-top: 60px;
+        width: 420px;
+        background-color: #fff;
+        margin: auto;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    .p-header {
+        margin: auto;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .p-diputats {
+        margin-top: 30px;
+    }
+    .p-provincia {
+        margin-top: 35px;
+        font-weight: bold;
+    }
+    .p-partit {
+        font-weight: bold;
+    }
+    #p-partit-img {
+        width: 70px;
+        height: 70px;
+        border: 1px solid #000;
+    }
+    .p-container-partit > div {
+        margin-top: 18px;
+        display: inline-block;
+    }
+    .p-container-container {
+        vertical-align: middle;
+        margin: 6px;
+    }
+    .not-centered {
+        margin-top: 15px;
+        padding-left: 60px;
+        text-align: left;
+    }
+    .p-candidat {
+        padding-top: 2px;
+    }
+    .p-suplents {
+        font-size: 10px;
+        margin-top: 12px;
+    }
+    .p-suplents-container {
+        font-size: 10px;
+        margin-top: 8px;
+        padding-bottom: 150px;
+    }
+    @media print {
+        #papereta-container {
+            orientation: portrait;
+            background-color: white;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 18px;
+        }
+    }
+  </style>
+</head>
+<body>
+    <div class="background">
+        <div>
+            </br>
+            <span>Imatge: </span><input type='file' id='inpfile' accept="image/jpeg, image/png, image/gif">
+            <span>Candidats </span><button id="candidats-mes">+</button><button id="candidats-menys">-</button>
+            <span>Suplents </span><button id="suplents-mes">+</button><button id="suplents-menys">-</button>
+            </br>
+            </br>
+            <button onclick="generatePDF()" style="font-size: 20px">IMPRIMIR</button>
+
+            </br>
+            </br>
+        </div>
+        <div id="papereta-container">
+
+            <div id="papereta">
+
+                <div contenteditable="true" class="p-header">ELECCIONES A CORTES GENERALES 2023</div>
+                <div contenteditable="true" class="p-header">ELECCIONS A CORTS GENERALS 2023</div>
+
+                <div class="p-diputats">
+                    <div contenteditable="true">DIPUTADOS/AS</div>
+                    <div contenteditable="true">DIPUTATS/ADES</div>
+                </div>
+
+                <div class="p-provincia" contenteditable="true">BARCELONA</div>
+
+                <div class="p-container-partit">
+                    <div class="p-container-container">
+                        <div class="p-partit" contenteditable="true">JUNTS PER CATALUNYA - JUNTS</div>
+                        <div class="p-partit" contenteditable="true">(JxCAT-JUNTS)</div>
+                    </div>
+                    <div class="p-container-container">
+                        <img id="p-partit-img" src="junts.png" />
+                    </div>
+                </div>
+
+                <div class="not-centered">
+                    <div class="p-candidats-container">
+                        <div contenteditable="true" class="p-candidat">JORDI TURULL I NEGRE</div>
+                        <div contenteditable="true" class="p-candidat">CONCEPCIÓ CAÑADELL SALVIA</div>
+                        <div contenteditable="true" class="p-candidat">ROSA MARIA BURRELL OBIOLS</div>
+                        <div contenteditable="true" class="p-candidat">RICARD PÉREZ LLORDES</div>
+                    </div>
+
+                    <div>
+                        <div style="text-transform: none" contenteditable="true" class="p-suplents">Suplentes/Suplents</div>
+                        <div class="p-suplents-container">
+                            <div contenteditable="true">RAUL PALACIOS BOVER</div>
+                            <div contenteditable="true">MERCE VALLS I QUEROL</div>
+                            <div contenteditable="true">RAFEL SAFONT ALIAGA</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+  <script>
+    function generatePDF() {
+        window.print();
+    }
+    $('#inpfile').on('change', function(){
+         var file = $(this).prop('files')[0];
+         var img = document.getElementById("p-partit-img");
+         var reader = new FileReader();
+         reader.addEventListener("load", function () {
+            img.src = reader.result;
+         });
+         if (file)
+            reader.readAsDataURL(file);
+        });
+
+        $('#candidats-mes').click(function() {
+            var n = $('.p-candidats-container').children().last().clone();
+            $('.p-candidats-container').append(n);
+        });
+        $('#candidats-menys').click(function() {
+            if ($('.p-candidats-container').children().length > 1) {
+                $('.p-candidats-container').children().last().remove();
+            }
+        });
+        $('#suplents-mes').click(function() {
+            var n = $('.p-suplents-container').children().last().clone();
+            $('.p-suplents-container').append(n);
+        });
+        $('#suplents-menys').click(function() {
+            if ($('.p-suplents-container').children().length > 1) {
+                $('.p-suplents-container').children().last().remove();
+            }
+        });
+  </script>
+</body>
+</html>
